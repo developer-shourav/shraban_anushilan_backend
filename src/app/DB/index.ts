@@ -3,9 +3,14 @@ import { USER_ROLE } from '../modules/user/user.constant';
 import { User } from '../modules/user/user.model';
 
 const superUser = {
+  name: {
+    firstName: 'Super',
+    middleName: '',
+    lastName: 'Admin',
+  },
   email: config.super_admin_email,
   password: config.super_admin_password,
-  needsPasswordChange: false,
+  needPasswordChange: false,
   role: USER_ROLE.superAdmin,
   status: 'in-progress',
   isDeleted: false,

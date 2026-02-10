@@ -78,11 +78,6 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 
 const userSchema = new Schema<TUser, UserModel>(
   {
-    id: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     name: {
       type: userNameSchema,
       required: [true, 'Name is required'],
@@ -93,7 +88,6 @@ const userSchema = new Schema<TUser, UserModel>(
         values: ['male', 'female', 'other'],
         message: '{VALUE} is not a valid gender.',
       },
-      required: [true, 'Gender is required.'],
       trim: true,
     },
     dateOfBirth: { type: String },
@@ -102,10 +96,9 @@ const userSchema = new Schema<TUser, UserModel>(
       required: [true, 'Email is required'],
       unique: true,
     },
-    contactNo: { type: String, required: [true, 'Contact number is required'] },
+    contactNo: { type: String },
     emergencyContactNo: {
       type: String,
-      required: [true, 'Emergency contact number is required'],
     },
     bloodGroup: {
       type: String,
@@ -116,11 +109,9 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     presentAddress: {
       type: String,
-      required: [true, 'Present address is required'],
     },
     permanentAddress: {
       type: String,
-      required: [true, 'Permanent address is required'],
     },
     guardian: {
       type: guardianSchema,
@@ -200,17 +191,6 @@ userSchema.post('save', function (doc, next) {
 
   next();
 });
-
-//checking if user is already exist!
-userSchema.statics.isUserExists = async function (id: string) {
-  const existingUser = await User.findOne({ id });
-  return existingUser;
-};
-
-// ----------Check if the user is exist by custom Id
-userSchema.statics.isUserExistByCustomId = async function (id: string) {
-  return await User.findOne({ id }).select('+password');
-};
 
 // ----------Check if the password match with the actual password
 userSchema.statics.isPasswordMatched = async function (

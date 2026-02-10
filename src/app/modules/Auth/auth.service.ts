@@ -10,7 +10,7 @@ import { sendEmail } from '../../utils/sendEmail';
 
 const logInUser = async (payload: TLoginUser) => {
   // ----------Check if the user is exist
-  const user = await User.isUserExistByCustomId(payload?.id);
+  const user = await User.findOne({ email: payload.email }).select('+password');
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -35,7 +35,7 @@ const logInUser = async (payload: TLoginUser) => {
 
   // ----------Create token and send to the client
   const jwtPayload = {
-    userId: user?.id,
+    userId: user?._id,
     role: user?.role,
   };
   // --- Create AccessToken
@@ -63,7 +63,7 @@ const changePasswordIntoDB = async (
   payload: { oldPassword: string; newPassword: string },
 ) => {
   // ----------Check if the user is exist
-  const user = await User.isUserExistByCustomId(userData?.userId);
+  const user = await User.findById(userData?.userId).select('+password');
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -98,11 +98,8 @@ const changePasswordIntoDB = async (
     Number(config.bcrypt_salt_round),
   );
 
-  await User.findOneAndUpdate(
-    {
-      id: userData.userId,
-      role: userData.role,
-    },
+  await User.findByIdAndUpdate(
+    userData.userId,
     {
       password: newHashedPassword,
       needPasswordChange: false,
@@ -120,7 +117,7 @@ const refreshToken = async (TOKEN: string) => {
   const { userId, iat } = decoded;
 
   // ----------Check if the user is exist
-  const user = await User.isUserExistByCustomId(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -153,7 +150,7 @@ const refreshToken = async (TOKEN: string) => {
 
   // ----------Create token and send to the client
   const jwtPayload = {
-    userId: user?.id,
+    userId: user?._id,
     role: user?.role,
   };
   // --- Create AccessToken
@@ -170,7 +167,7 @@ const refreshToken = async (TOKEN: string) => {
 
 const forgetPasswordIntoDB = async (userId: string) => {
   // ----------Check if the user is exist
-  const user = await User.isUserExistByCustomId(userId);
+  const user = await User.findById(userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -189,7 +186,7 @@ const forgetPasswordIntoDB = async (userId: string) => {
 
   // ----------Create token
   const jwtPayload = {
-    userId: user?.id,
+    userId: user?._id,
     role: user?.role,
   };
   // --- Create AccessToken
@@ -199,18 +196,18 @@ const forgetPasswordIntoDB = async (userId: string) => {
     '10m',
   );
 
-  const restUILink = `${config.reset_password_ui_link}/id=${user?.id}&token=${resetToken}`;
+  const restUILink = `${config.reset_password_ui_link}/userId=${user?._id}&token=${resetToken}`;
 
   /* ---------Send Password Reset Link to the user email address-------- */
   await sendEmail(user?.email, restUILink);
 };
 
 const resetPasswordIntoDB = async (
-  payload: { id: string; newPassword: string },
+  payload: { userId: string; newPassword: string },
   TOKEN: string,
 ) => {
   // ----------Check if the user is exist
-  const user = await User.isUserExistByCustomId(payload?.id);
+  const user = await User.findById(payload?.userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
@@ -231,7 +228,7 @@ const resetPasswordIntoDB = async (
   const decoded = verifyToken(TOKEN, config.jwt_access_secret as string);
 
   // -------- checking the user is permitted to reset the password
-  if (decoded.userId !== payload.id) {
+  if (decoded.userId !== payload.userId) {
     throw new AppError(
       httpStatus.UNAUTHORIZED,
       'Unauthorized!! Your are not permitted💀',
@@ -244,11 +241,8 @@ const resetPasswordIntoDB = async (
     Number(config.bcrypt_salt_round),
   );
 
-  await User.findOneAndUpdate(
-    {
-      id: decoded.userId,
-      role: decoded.role,
-    },
+  await User.findByIdAndUpdate(
+    decoded.userId,
     {
       password: newHashedPassword,
       needPasswordChange: false,

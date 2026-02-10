@@ -60,7 +60,7 @@ const refreshToken = catchAsync(async (req, res) => {
 const forgetPassword = catchAsync(async (req, res) => {
   // 1. Will call service function to get all Faculties
 
-  const userId = req.body.id;
+  const { userId } = req.body;
   const result = await AuthServices.forgetPasswordIntoDB(userId);
 
   // 2. Send Response to the frontend

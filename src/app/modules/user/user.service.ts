@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose from 'mongoose';
 import config from '../../config';
 import { TUser } from './user.interface';
 import { User } from './user.model';
@@ -13,7 +12,6 @@ import QueryBuilder from '../../builder/QueryBuilder';
 /* --------Logic For Create an User------ */
 const createUserIntoDB = async (
   password: string,
-  imageFileDetails: any,
   payload: TUser,
 ) => {
   // Create an user object
@@ -24,47 +22,15 @@ const createUserIntoDB = async (
 
   // ----------Set default role to student if not provided----------
   userData.role = payload.role || 'student';
-  
-  // Set custom id as email for uniqueness (since we don't have a specific generator)
-  userData.id = payload.email;
 
-  const session = await mongoose.startSession();
-
-  try {
-    session.startTransaction();
-
-    // ----------send Image to the cloudinary----------
-    if (imageFileDetails) {
-      const imagePath = imageFileDetails?.path;
-      const { imageName } = uniqueImageNameGenerator(payload.name);
-      const { secure_url } = await hostImageToCloudinary(imageName, imagePath);
-
-      userData.profileImage = secure_url as string;
-    }
-
-    // ----------Create an user
-    const newUser = await User.create([userData], { session });
-
-    if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
-    }
-
-    await session.commitTransaction();
-    await session.endSession();
-
-    return newUser[0];
-  } catch (err) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, `${err}`);
-  }
+  const newUser = await User.create(userData);
+  return newUser;
 };
 
 /* --------Logic For Get All Users From Database------ */
 const getAllUsersFromDB = async (query: Record<string, unknown>) => {
   const userSearchFields = [
     'email',
-    'id',
     'contactNo',
     'name.firstName',
     'name.lastName',
@@ -93,7 +59,7 @@ const getSingleUserFromDB = async (id: string) => {
 };
 
 /* --------Logic For Update An User From Database------ */
-const updateUserIntoDB = async (id: string, payload: Partial<TUser>) => {
+const updateUserIntoDB = async (id: string, payload: Partial<TUser>, imageFileDetails?: any) => {
   const { name, guardian, localGuardian, ...remainingUserData } = payload;
 
   const modifiedUpdatedData: Record<string, unknown> = {
@@ -116,6 +82,19 @@ const updateUserIntoDB = async (id: string, payload: Partial<TUser>) => {
     for (const [key, value] of Object.entries(localGuardian)) {
       modifiedUpdatedData[`localGuardian.${key}`] = value;
     }
+  }
+
+  // ----------send Image to the cloudinary if image is provided----------
+  if (imageFileDetails) {
+    const user = await User.findById(id);
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    const imagePath = imageFileDetails?.path;
+    const { imageName } = uniqueImageNameGenerator(user.name);
+    const { secure_url } = await hostImageToCloudinary(imageName, imagePath);
+
+    modifiedUpdatedData.profileImage = secure_url as string;
   }
 
   const result = await User.findByIdAndUpdate(id, modifiedUpdatedData, {
@@ -152,7 +131,7 @@ const changeUserStatusIntoDB = async (
 
 /* --------Logic For getting present loggedIn user's info ------ */
 const getMe = async (role: string, userId: string) => {
-  const result = await User.findOne({ id: userId });
+  const result = await User.findById(userId);
   return result;
 };
 

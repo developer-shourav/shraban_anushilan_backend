@@ -13,8 +13,6 @@ const router = express.Router();
 router.post(
   '/create-user',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
-  upload.single('profileImage'),
-  formDataToJsonConvertor,
   validateRequest(userValidation.createUserValidationSchema),
   UserControllers.createUser,
 );
@@ -37,6 +35,8 @@ router.get(
 router.patch(
   '/:id',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.student),
+  upload.single('profileImage'),
+  formDataToJsonConvertor,
   validateRequest(userValidation.updateUserValidationSchema),
   UserControllers.updateUser,
 );

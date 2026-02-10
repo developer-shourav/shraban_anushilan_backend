@@ -4,13 +4,11 @@ import sendResponse from '../../utils/sendResponse';
 
 /* ----------------------Create A User----------------- */
 const createUser = catchAsync(async (req, res) => {
-  const imageFileDetails = req.file;
   const { password, user: userData } = req.body;
 
   // will call service function to send this data
   const result = await UserServices.createUserIntoDB(
     password,
-    imageFileDetails,
     userData,
   );
 
@@ -46,7 +44,9 @@ const getSingleUser = catchAsync(async (req, res) => {
 const updateUser = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { user } = req.body;
-  const result = await UserServices.updateUserIntoDB(id, user);
+  const imageFileDetails = req.file;
+
+  const result = await UserServices.updateUserIntoDB(id, user, imageFileDetails);
 
   sendResponse(res, {
     message: 'User updated successfully',
