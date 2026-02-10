@@ -4,9 +4,9 @@ import { User } from '../modules/user/user.model';
 
 const superUser = {
   name: {
-    firstName: 'Super',
+    firstName: config.super_admin_name_fst,
     middleName: '',
-    lastName: 'Admin',
+    lastName: config.super_admin_name_lst,
   },
   email: config.super_admin_email,
   password: config.super_admin_password,
