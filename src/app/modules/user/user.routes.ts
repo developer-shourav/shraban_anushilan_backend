@@ -1,8 +1,6 @@
 import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
-import { studentValidations } from '../students/student.validation';
 import { UserControllers } from './user.controller';
-import { AdminValidations } from '../admin/admin.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from './user.constant';
 import { userValidation } from './user.validation';
@@ -11,24 +9,43 @@ import { formDataToJsonConvertor } from '../../middlewares/formDataToJsonConvert
 
 const router = express.Router();
 
-// -----------Create A Student
+// -----------Create A User
 router.post(
-  '/create-student',
+  '/create-user',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   upload.single('profileImage'),
   formDataToJsonConvertor,
-  validateRequest(studentValidations.createStudentValidationSchema),
-  UserControllers.createStudent,
+  validateRequest(userValidation.createUserValidationSchema),
+  UserControllers.createUser,
 );
 
-// -----------Create An Admin
-router.post(
-  '/create-admin',
+// -----------Get All Users
+router.get(
+  '/',
   auth(USER_ROLE.admin, USER_ROLE.superAdmin),
-  upload.single('profileImage'),
-  formDataToJsonConvertor,
-  validateRequest(AdminValidations.createAdminValidationSchema),
-  UserControllers.createAdmin,
+  UserControllers.getAllUsers,
+);
+
+// -----------Get Single User
+router.get(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.student),
+  UserControllers.getSingleUser,
+);
+
+// -----------Update User
+router.patch(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.student),
+  validateRequest(userValidation.updateUserValidationSchema),
+  UserControllers.updateUser,
+);
+
+// -----------Delete User
+router.delete(
+  '/:id',
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  UserControllers.deleteUser,
 );
 
 // -----------Change User Status by Admin
@@ -39,7 +56,7 @@ router.patch(
   UserControllers.changeStatus,
 );
 
-// -----------Route to get all kinds of users (Admin, Faculty, Student) own data
+// -----------Route to get own data
 router.get(
   '/me',
   auth(

@@ -2,41 +2,65 @@ import catchAsync from '../../utils/catchAsync';
 import { UserServices } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 
-/* ----------------------Create A Student----------------- */
-const createStudent = catchAsync(async (req, res) => {
+/* ----------------------Create A User----------------- */
+const createUser = catchAsync(async (req, res) => {
   const imageFileDetails = req.file;
-
-  const { password, student: createNewStudentData } = req.body;
+  const { password, user: userData } = req.body;
 
   // will call service function to send this data
-  const result = await UserServices.createStudentIntoDB(
+  const result = await UserServices.createUserIntoDB(
     password,
     imageFileDetails,
-    createNewStudentData,
+    userData,
   );
 
   sendResponse(res, {
-    message: 'Student is created successfully',
+    message: 'User is created successfully',
     data: result,
   });
 });
 
-
-
-/* ----------------------Create An Admin----------------- */
-const createAdmin = catchAsync(async (req, res) => {
-  const imageFileDetails = req.file;
-  const { password, admin: createNewAdminData } = req.body;
-
-  // will call service function to send this data
-  const result = await UserServices.createAdminIntoDB(
-    password,
-    imageFileDetails,
-    createNewAdminData,
-  );
+/* ----------------------Get All Users----------------- */
+const getAllUsers = catchAsync(async (req, res) => {
+  const query = req.query;
+  const result = await UserServices.getAllUsersFromDB(query);
 
   sendResponse(res, {
-    message: 'Admin is created successfully',
+    message: 'All users are retrieved successfully',
+    data: result,
+  });
+});
+
+/* ----------------------Get Single User----------------- */
+const getSingleUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserServices.getSingleUserFromDB(id);
+
+  sendResponse(res, {
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
+
+/* ----------------------Update User----------------- */
+const updateUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { user } = req.body;
+  const result = await UserServices.updateUserIntoDB(id, user);
+
+  sendResponse(res, {
+    message: 'User updated successfully',
+    data: result,
+  });
+});
+
+/* ----------------------Delete User----------------- */
+const deleteUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserServices.deleteUserFromDB(id);
+
+  sendResponse(res, {
+    message: 'User deleted successfully',
     data: result,
   });
 });
@@ -70,8 +94,11 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 export const UserControllers = {
-  createStudent,
-  createAdmin,
+  createUser,
+  getAllUsers,
+  getSingleUser,
+  updateUser,
+  deleteUser,
   changeStatus,
   getMe,
 };

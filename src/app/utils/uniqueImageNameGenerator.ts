@@ -1,4 +1,4 @@
-import { TUserName } from '../modules/students/student.interface';
+import { TUserName } from '../modules/user/user.interface';
 
 export const uniqueImageNameGenerator = (userName: TUserName) => {
   // -------- Generate a unique username
