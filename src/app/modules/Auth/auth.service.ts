@@ -98,14 +98,11 @@ const changePasswordIntoDB = async (
     Number(config.bcrypt_salt_round),
   );
 
-  await User.findByIdAndUpdate(
-    userData.userId,
-    {
-      password: newHashedPassword,
-      needPasswordChange: false,
-      passwordChangedAt: new Date(),
-    },
-  );
+  await User.findByIdAndUpdate(userData.userId, {
+    password: newHashedPassword,
+    needPasswordChange: false,
+    passwordChangedAt: new Date(),
+  });
 
   return null;
 };
@@ -241,14 +238,11 @@ const resetPasswordIntoDB = async (
     Number(config.bcrypt_salt_round),
   );
 
-  await User.findByIdAndUpdate(
-    decoded.userId,
-    {
-      password: newHashedPassword,
-      needPasswordChange: false,
-      passwordChangedAt: new Date(),
-    },
-  );
+  await User.findByIdAndUpdate(decoded.userId, {
+    password: newHashedPassword,
+    needPasswordChange: false,
+    passwordChangedAt: new Date(),
+  });
 
   return {};
 };

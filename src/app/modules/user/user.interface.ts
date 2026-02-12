@@ -35,44 +35,61 @@ export type TBloodGroup =
   | 'O+'
   | 'O-';
 
-export type YourGroup = 
-  | "child"
-  | "high school pupil"
-  | "college pupil"
-  | "university pupil"
-  | "senior"
-  | "old";
+export type YourGroup =
+  | 'child'
+  | 'high school pupil'
+  | 'college pupil'
+  | 'university pupil'
+  | 'senior'
+  | 'old';
 
 export type PresentCondition =
-  | "come and go"
-  | "sometimes come"
-  | "sometimes prasadam"
-  | "starts satvic vojan"
-  | "starts prasadam vojan"
-  | "started prasadam vojan and no progress"
-  | "preparation for dikkhsha"
-  | "waiting for dikkhsha"
-  | "after dikkhsha no progress"
-  | "preparation for brahmana dikkhsha"
-  | "after brahmana dikkhsha working on progress";
-
-
+  | 'come and go'
+  | 'sometimes come'
+  | 'sometimes prasadam'
+  | 'starts satvic vojan'
+  | 'starts prasadam vojan'
+  | 'started prasadam vojan and no progress'
+  | 'preparation for dikkhsha'
+  | 'waiting for dikkhsha'
+  | 'after dikkhsha no progress'
+  | 'preparation for brahmana dikkhsha'
+  | 'after brahmana dikkhsha working on progress';
 
 export type Course =
-  | "ISKCON Disciple Course (IDC)"
-  | "Bhakti-Sastri"
-  | "Bhakti-Vaibhava"
-  | "Bhakti-Vedanta"
-  | "Bhakti-Sarvabhauma"
-  | "TTC-1"
-  | "TTC-2"
-  | "BS-TTCF"
-  | "Leadership and Management"
-  | "Archana";
+  | 'ISKCON Disciple Course (IDC)'
+  | 'Bhakti-Sastri'
+  | 'Bhakti-Vaibhava'
+  | 'Bhakti-Vedanta'
+  | 'Bhakti-Sarvabhauma'
+  | 'TTC-1'
+  | 'TTC-2'
+  | 'BS-TTCF'
+  | 'Leadership and Management'
+  | 'Archana';
 
-export type Occupation = 'student' | 'businessman' | 'job' | 'privet service' | 'govt service' | 'untempted' | 'shop assistant' | 'chef' | 'driver' | 'firmer' | 'teacher' | 'house wife' | 'content creator' | 'blogging';
+export type Occupation =
+  | 'student'
+  | 'businessman'
+  | 'job'
+  | 'privet service'
+  | 'govt service'
+  | 'untempted'
+  | 'shop assistant'
+  | 'chef'
+  | 'driver'
+  | 'firmer'
+  | 'teacher'
+  | 'house wife'
+  | 'content creator'
+  | 'blogging';
 
-export type MarriagePlaning = "depends on councillor" | "confused" | "brahmachari" | "grahastha" | "in a relation";
+export type MarriagePlaning =
+  | 'depends on councillor'
+  | 'confused'
+  | 'brahmachari'
+  | 'grahastha'
+  | 'in a relation';
 
 export interface TUser {
   _id: string;
@@ -102,7 +119,7 @@ export interface TUser {
   presentCourse?: Course;
   courseCompleted?: Course;
   isStudentOfGitaClass?: boolean;
-  eventParticipated: string[];
+  eventParticipated?: string[];
   completed_IDC?: boolean;
   isDikkhshaTaken?: boolean;
   dikkhshaDate?: Date;

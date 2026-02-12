@@ -40,7 +40,9 @@ const createUserValidationSchema = z.object({
       email: z.string().email(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),
-      bloodGroup: z.enum(['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-']).optional(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'])
+        .optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
       guardian: guardianValidationSchema.partial().optional(),

@@ -58,11 +58,7 @@ router.patch(
 // -----------Route to get own data
 router.get(
   '/me',
-  auth(
-    USER_ROLE.admin,
-    USER_ROLE.superAdmin,
-    USER_ROLE.student,
-  ),
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.student),
   UserControllers.getMe,
 );
 

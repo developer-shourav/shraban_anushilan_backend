@@ -10,10 +10,7 @@ import { uniqueImageNameGenerator } from '../../utils/uniqueImageNameGenerator';
 import QueryBuilder from '../../builder/QueryBuilder';
 
 /* --------Logic For Create an User------ */
-const createUserIntoDB = async (
-  password: string,
-  payload: TUser,
-) => {
+const createUserIntoDB = async (password: string, payload: TUser) => {
   // Create an user object
   const userData: Partial<TUser> = { ...payload };
 
@@ -59,7 +56,11 @@ const getSingleUserFromDB = async (id: string) => {
 };
 
 /* --------Logic For Update An User From Database------ */
-const updateUserIntoDB = async (id: string, payload: Partial<TUser>, imageFileDetails?: any) => {
+const updateUserIntoDB = async (
+  id: string,
+  payload: Partial<TUser>,
+  imageFileDetails?: any,
+) => {
   const { name, guardian, localGuardian, ...remainingUserData } = payload;
 
   const modifiedUpdatedData: Record<string, unknown> = {
