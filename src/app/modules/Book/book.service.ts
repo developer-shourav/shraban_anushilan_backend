@@ -7,10 +7,28 @@ import { Book } from './book.model';
 import { uniqueImageNameGenerator } from '../../utils/uniqueImageNameGenerator';
 import { hostImageToCloudinary } from '../../utils/hostImageToCloudinary';
 import { hostPdfToR2 } from '../../utils/hostPdfToR2';
+import { slugGenerator } from '../../utils/slugGenerator';
 
 /* --------Logic For Create a Book------ */
 const createBookIntoDB = async (payload: TBook, files?: any) => {
   const bookData = { ...payload };
+
+  // Generate unique slug
+  const baseSlug = slugGenerator(bookData.bookSlug || bookData.bookName);
+  const slug = baseSlug;
+  let isUnique = false;
+  let counter = 0;
+
+  while (!isUnique) {
+    const currentSlug = counter === 0 ? slug : `${slug}-${counter}`;
+    const existingBook = await Book.findOne({ bookSlug: currentSlug });
+    if (!existingBook) {
+      bookData.bookSlug = currentSlug;
+      isUnique = true;
+    } else {
+      counter++;
+    }
+  }
 
   const bookCoverFile = files?.['bookCover']?.[0];
   const bookPdfFile = files?.['bookFile']?.[0];
@@ -37,7 +55,8 @@ const createBookIntoDB = async (payload: TBook, files?: any) => {
     }
 
     if (bookPdfFile) {
-      const fileName = `books/${Date.now()}-${bookPdfFile.originalname}`;
+      const sanitizedFileName = bookPdfFile.originalname.replace(/\s+/g, '-');
+      const fileName = `books/${Date.now()}-${sanitizedFileName}`;
       const pdfUrl = await hostPdfToR2(fileName, bookPdfFile.path);
       bookData.bookFile = pdfUrl;
       bookData.isOurBook = true;
@@ -92,6 +111,30 @@ const updateBookIntoDB = async (
 ) => {
   const bookData = { ...payload };
 
+  // If bookName or bookSlug is updated, regenerate unique slug
+  if (bookData.bookSlug || bookData.bookName) {
+    const baseSlug = slugGenerator(
+      bookData.bookSlug || bookData.bookName || '',
+    );
+    const slug = baseSlug;
+    let isUnique = false;
+    let counter = 0;
+
+    while (!isUnique) {
+      const currentSlug = counter === 0 ? slug : `${slug}-${counter}`;
+      const existingBook = await Book.findOne({
+        bookSlug: currentSlug,
+        _id: { $ne: id },
+      });
+      if (!existingBook) {
+        bookData.bookSlug = currentSlug;
+        isUnique = true;
+      } else {
+        counter++;
+      }
+    }
+  }
+
   if (files) {
     const bookCoverFile = files['bookCover']?.[0];
     const bookPdfFile = files['bookFile']?.[0];
@@ -109,7 +152,8 @@ const updateBookIntoDB = async (
     }
 
     if (bookPdfFile) {
-      const fileName = `books/${Date.now()}-${bookPdfFile.originalname}`;
+      const sanitizedFileName = bookPdfFile.originalname.replace(/\s+/g, '-');
+      const fileName = `books/${Date.now()}-${sanitizedFileName}`;
       const pdfUrl = await hostPdfToR2(fileName, bookPdfFile.path);
       bookData.bookFile = pdfUrl;
       bookData.isOurBook = true;
