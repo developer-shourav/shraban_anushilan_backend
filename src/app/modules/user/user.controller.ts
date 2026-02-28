@@ -7,10 +7,7 @@ const createUser = catchAsync(async (req, res) => {
   const { password, user: userData } = req.body;
 
   // will call service function to send this data
-  const result = await UserServices.createUserIntoDB(
-    password,
-    userData,
-  );
+  const result = await UserServices.createUserIntoDB(password, userData);
 
   sendResponse(res, {
     message: 'User is created successfully',
@@ -46,7 +43,11 @@ const updateUser = catchAsync(async (req, res) => {
   const { user } = req.body;
   const imageFileDetails = req.file;
 
-  const result = await UserServices.updateUserIntoDB(id, user, imageFileDetails);
+  const result = await UserServices.updateUserIntoDB(
+    id,
+    user,
+    imageFileDetails,
+  );
 
   sendResponse(res, {
     message: 'User updated successfully',

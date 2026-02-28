@@ -23,4 +23,9 @@ export default {
   super_admin_name_lst: process.env.SUPER_ADMIN_LST_NAME,
   super_admin_email: process.env.SUPER_ADMIN_EMAIL,
   super_admin_password: process.env.SUPER_ADMIN_PASSWORD,
+  r2_account_id: process.env.R2_ACCOUNT_ID,
+  r2_access_key_id: process.env.R2_ACCESS_KEY_ID,
+  r2_secret_access_key: process.env.R2_SECRET_ACCESS_KEY,
+  r2_bucket_name: process.env.R2_BUCKET_NAME,
+  r2_public_url: process.env.R2_PUBLIC_URL,
 };

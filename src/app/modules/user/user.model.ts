@@ -1,8 +1,21 @@
 import { model, Schema } from 'mongoose';
-import { TUser, UserModel, TUserName, TGuardian, TLocalGuardian } from './user.interface';
+import {
+  TUser,
+  UserModel,
+  TUserName,
+  TGuardian,
+  TLocalGuardian,
+} from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
-import { UserStatus } from './user.constant';
+import {
+  Course,
+  MarriagePlaning,
+  Occupation,
+  PresentCondition,
+  UserStatus,
+  YourGroup,
+} from './user.constant';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -123,6 +136,56 @@ const userSchema = new Schema<TUser, UserModel>(
     designation: {
       type: String,
     },
+    firstCome: { type: Date },
+    lastAttend: { type: Date },
+    attachedWith: { type: String },
+    firstComeWith: { type: String },
+    yourGroup: {
+      type: String,
+      enum: YourGroup,
+    },
+    friendList: [{ type: String }],
+    firstPrasadamPrapti: { type: Schema.Types.Mixed },
+    presentCondition: {
+      type: String,
+      enum: PresentCondition,
+    },
+    presentStatus: { type: String },
+    presentCourse: {
+      type: String,
+      enum: Course,
+    },
+    courseCompleted: {
+      type: String,
+      enum: Course,
+    },
+    isStudentOfGitaClass: { type: Boolean },
+    eventParticipated: [{ type: String }],
+    completed_IDC: { type: Boolean },
+    isDikkhshaTaken: { type: Boolean },
+    dikkhshaDate: { type: Date },
+    guruMaharajName: { type: String },
+    occupation: {
+      type: String,
+      enum: Occupation,
+    },
+    isAcademicEducationCompleted: { type: Boolean },
+    isMarried: { type: Boolean },
+    maritalPlanning: {
+      type: String,
+      enum: MarriagePlaning,
+    },
+    futureCareerPlaning: { type: String },
+    lifeGoal: { type: String },
+    expertIn: { type: String },
+    teamService: { type: String },
+    additionalInformation: { type: String },
+    badHabits: [{ type: String }],
+    wantToDonateBlood: { type: Boolean },
+    lastBloodDonateAt: { type: Date },
+    totalBloodDonationCount: { type: Number },
+    isRegularlyDonateBlood: { type: Boolean },
+    lastOnline: { type: Date },
     password: {
       type: String,
       required: true,
