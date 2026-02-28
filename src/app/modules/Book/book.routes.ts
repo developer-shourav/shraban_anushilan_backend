@@ -9,6 +9,7 @@ import { formDataToJsonConvertor } from '../../middlewares/formDataToJsonConvert
 
 const router = express.Router();
 
+// -----------Create A Book
 router.post(
   '/create-book',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
@@ -21,10 +22,13 @@ router.post(
   BookControllers.createBook,
 );
 
+// -----------Get All Books
 router.get('/', BookControllers.getAllBooks);
 
+// -----------Get Single Book By Slug
 router.get('/:slug', BookControllers.getSingleBook);
 
+// -----------Update Book
 router.patch(
   '/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
@@ -37,12 +41,14 @@ router.patch(
   BookControllers.updateBook,
 );
 
+// -----------Soft Delete Book
 router.patch(
   '/soft-delete/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   BookControllers.softDeleteBook,
 );
 
+// -----------Permanent Delete Book
 router.delete(
   '/:id',
   auth(USER_ROLE.superAdmin, USER_ROLE.admin),

@@ -2,6 +2,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { BookServices } from './book.service';
 
+/* ----------------------Create A Book----------------- */
 const createBook = catchAsync(async (req, res) => {
   const result = await BookServices.createBookIntoDB(req.body, req.files);
 
@@ -11,6 +12,7 @@ const createBook = catchAsync(async (req, res) => {
   });
 });
 
+/* ----------------------Get All Books----------------- */
 const getAllBooks = catchAsync(async (req, res) => {
   const result = await BookServices.getAllBooksFromDB(req.query);
 
@@ -20,6 +22,7 @@ const getAllBooks = catchAsync(async (req, res) => {
   });
 });
 
+/* ----------------------Get Single Book----------------- */
 const getSingleBook = catchAsync(async (req, res) => {
   const { slug } = req.params;
   const result = await BookServices.getSingleBookFromDB(slug);
@@ -30,6 +33,7 @@ const getSingleBook = catchAsync(async (req, res) => {
   });
 });
 
+/* ----------------------Update Book----------------- */
 const updateBook = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await BookServices.updateBookIntoDB(id, req.body, req.files);
@@ -40,6 +44,7 @@ const updateBook = catchAsync(async (req, res) => {
   });
 });
 
+/* ----------------------Soft Delete Book----------------- */
 const softDeleteBook = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await BookServices.softDeleteBookFromDB(id);
@@ -50,6 +55,7 @@ const softDeleteBook = catchAsync(async (req, res) => {
   });
 });
 
+/* ----------------------Permanent Delete Book----------------- */
 const permanentDeleteBook = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await BookServices.permanentDeleteBookFromDB(id);

@@ -8,6 +8,7 @@ import { uniqueImageNameGenerator } from '../../utils/uniqueImageNameGenerator';
 import { hostImageToCloudinary } from '../../utils/hostImageToCloudinary';
 import { hostPdfToR2 } from '../../utils/hostPdfToR2';
 
+/* --------Logic For Create a Book------ */
 const createBookIntoDB = async (payload: TBook, files?: any) => {
   const bookData = { ...payload };
 
@@ -47,6 +48,7 @@ const createBookIntoDB = async (payload: TBook, files?: any) => {
   return result;
 };
 
+/* --------Logic For Get All Books From Database------ */
 const getAllBooksFromDB = async (query: Record<string, unknown>) => {
   const bookSearchableFields = ['bookName', 'writer', 'bookSlug', 'extraInfo'];
   const bookQuery = new QueryBuilder(Book.find(), query)
@@ -73,6 +75,7 @@ const getAllBooksFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
+/* --------Logic For Get A Single Book From Database------ */
 const getSingleBookFromDB = async (slug: string) => {
   const result = await Book.findOne({ bookSlug: slug });
   if (!result) {
@@ -81,6 +84,7 @@ const getSingleBookFromDB = async (slug: string) => {
   return result;
 };
 
+/* --------Logic For Update A Book Into Database------ */
 const updateBookIntoDB = async (
   id: string,
   payload: Partial<TBook>,
@@ -122,6 +126,7 @@ const updateBookIntoDB = async (
   return result;
 };
 
+/* --------Logic For Soft Delete A Book From Database------ */
 const softDeleteBookFromDB = async (id: string) => {
   const result = await Book.findByIdAndUpdate(
     id,
@@ -134,6 +139,7 @@ const softDeleteBookFromDB = async (id: string) => {
   return result;
 };
 
+/* --------Logic For Permanent Delete A Book From Database------ */
 const permanentDeleteBookFromDB = async (id: string) => {
   const result = await Book.findByIdAndDelete(id);
   if (!result) {
