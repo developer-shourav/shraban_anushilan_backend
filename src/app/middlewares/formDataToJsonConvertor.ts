@@ -5,7 +5,13 @@ export const formDataToJsonConvertor = (
   res: Response,
   next: NextFunction,
 ) => {
-  const newRequestData = req.body.formData;
-  req.body = JSON.parse(newRequestData);
+  if (req.body && typeof req.body.formData === 'string') {
+    try {
+      req.body = JSON.parse(req.body.formData);
+    } catch (error) {
+      // If parsing fails, you might want to handle it or just let it pass
+      // For now, we'll let it pass to the next middleware or validator
+    }
+  }
   next();
 };

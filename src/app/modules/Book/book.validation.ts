@@ -9,7 +9,7 @@ const createBookValidationSchema = z.object({
     bookSlug: z.string({
       required_error: 'Book slug is required',
     }),
-    isOurBook: z.boolean().optional().default(false),
+    isOurBook: z.boolean().optional().default(true),
     bookFile: z.string().optional(),
     bookLink: z.string().optional(),
     writer: z.string().optional(),
